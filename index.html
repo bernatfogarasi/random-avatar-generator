@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Random avatar generator</title>
+  </head>
+  <body></body>
+  <script>
+    var width = 3;
+    var height = 3;
+
+    var tiles = Array(height * 2)
+      .fill()
+      .map(() => Array(width * 2));
+    var value;
+    for (var row = 0; row < height; row++) {
+      for (var col = 0; col < width; col++) {
+        value = Math.floor(Math.random() * 5);
+
+        tiles[row][col] = value;
+        tiles[tiles.length - row - 1][col] = value;
+        tiles[row][tiles[0].length - col - 1] = value;
+        tiles[tiles.length - row - 1][tiles[0].length - col - 1] = value;
+      }
+    }
+    tiles[0][0] = 0;
+    tiles[0][tiles[0].length - 1] = 0;
+    tiles[tiles.length - 1][0] = 0;
+    tiles[tiles.length - 1][tiles[0].length - 1] = 0;
+    console.log(tiles);
+
+    var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+
+    var spacing = 4;
+
+    var y = 0;
+    for (var row = 0; row < tiles.length; row++) {
+      var x = -200 / width;
+      for (var col = 0; col < tiles[0].length; col++) {
+        x = x + 200 / width;
+        value = tiles[row][col];
+        var shape = document.createElementNS(
+          "http://www.w3.org/2000/svg",
+          "rect"
+        );
+        shape.setAttribute("x", x);
+        shape.setAttribute("y", y);
+        shape.setAttribute("width", 200 / width - spacing);
+        shape.setAttribute("height", 200 / height - spacing);
+        value === 0
+          ? shape.setAttribute("fill", "none")
+          : value === 1
+          ? shape.setAttribute("fill", "white")
+          : value === 2
+          ? shape.setAttribute("fill", "red")
+          : value === 3
+          ? shape.setAttribute("fill", "none")
+          : shape.setAttribute("fill", "yellow");
+        shape.setAttribute("rx", 8);
+        svg.appendChild(shape);
+      }
+      y = y + 200 / height;
+    }
+    svg.setAttribute("style", "width: 400px;");
+    document.body.appendChild(svg);
+  </script>
+  <style>
+    body {
+      background-color: black;
+    }
+    svg {
+      aspect-ratio: 1;
+      /* background-color: black; */
+    }
+  </style>
+</html>
